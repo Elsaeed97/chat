@@ -1,1 +1,10 @@
 venv/
+djchat/.env
+.vscode/
+djchat/db.sqlite3
+.DS_Store
+djchat/__pycache__
+djchat/djchat/__pycache__
+__pycache__/
+djchat/accounts/__pycache__/
+djchat/servers/__pycache__/

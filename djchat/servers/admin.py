@@ -5,7 +5,7 @@ from .models import Category, Channel, Server
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "description"]
+    list_display = ["id", "name", "icon"]
     list_filter = ["id", "name"]
 
 
