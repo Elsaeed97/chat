@@ -5,11 +5,11 @@ declare module "@mui/material/styles" {
     primaryAppBar: {
       height: number;
     };
-    primaryDrawer: {
+    primaryDraw: {
       width: number;
       closed: number;
     };
-    secondaryDrawer: {
+    secondaryDraw: {
       width: number;
     };
   }
@@ -17,30 +17,42 @@ declare module "@mui/material/styles" {
     primaryAppBar: {
       height: number;
     };
-    PrimaryDrawer: {
+    primaryDraw: {
       width: number;
       closed: number;
     };
-    secondaryDrawer: {
+    secondaryDraw: {
       width: number;
     };
   }
 }
 
-export const createMuiTheme = () => {
+export const createMuiTheme = (mode: "light" | "dark") => {
   let theme = createTheme({
     typography: {
       fontFamily: ["IBM Plex Sans", "sans-serif"].join(","),
+      body1: {
+        fontWeight: 500,
+        letterSpacing: "-0.5px",
+      },
+      body2: {
+        fontWeight: 500,
+        fontSize: "15px",
+        letterSpacing: "-0.5px",
+      },
     },
     primaryAppBar: {
       height: 50,
     },
-    primaryDrawer: {
+    primaryDraw: {
       width: 240,
       closed: 70,
     },
-    secondaryDrawer: {
+    secondaryDraw: {
       width: 240,
+    },
+    palette: {
+      mode,
     },
     components: {
       MuiAppBar: {
@@ -54,5 +66,4 @@ export const createMuiTheme = () => {
   theme = responsiveFontSizes(theme);
   return theme;
 };
-
 export default createMuiTheme;
