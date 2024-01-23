@@ -71,6 +71,37 @@ class Server(models.Model):
     member = models.ManyToManyField(
         settings.AUTH_USER_MODEL, verbose_name=_("Server Members")
     )
+    banner = models.ImageField(
+        _("Banner"),
+        upload_to=channel_banner_file_path,
+        blank=True,
+        null=True,
+        validators=[validate_image_extension],
+    )
+    icon = models.ImageField(
+        _("Icon"),
+        upload_to=channel_icon_file_path,
+        blank=True,
+        null=True,
+        validators=[validate_icon_image_size, validate_image_extension],
+    )
+
+    def save(self, *args, **kwargs):
+        if self.id:
+            existing_server = get_object_or_404(Server, id=self.id)
+            if existing_server.icon != self.icon:
+                existing_server.icon.delete(save=False)
+            if existing_server.banner != self.banner:
+                existing_server.banner.delete(save=False)
+        super(Server, self).save(*args, **kwargs)
+
+    @receiver(models.signals.pre_delete, sender="servers.Server")
+    def server_file_pre_delete(sender, instance, **kwargs):
+        for field in instance._meta.fields:
+            if field.name == "icon" or field.name == "banner":
+                file = getattr(instance, field.name)
+                if file:
+                    file.delete(save=False)
 
     class Meta:
         verbose_name = _("Server")
@@ -95,37 +126,6 @@ class Channel(models.Model):
         on_delete=models.CASCADE,
         related_name="channel_server",
     )
-    banner = models.ImageField(
-        _("Banner"),
-        upload_to=channel_banner_file_path,
-        blank=True,
-        null=True,
-        validators=[validate_image_extension],
-    )
-    icon = models.ImageField(
-        _("Icon"),
-        upload_to=channel_icon_file_path,
-        blank=True,
-        null=True,
-        validators=[validate_icon_image_size, validate_image_extension],
-    )
-
-    def save(self, *args, **kwargs):
-        if self.id:
-            existing_channel = get_object_or_404(Channel, id=self.id)
-            if existing_channel.icon != self.icon:
-                existing_channel.icon.delete(save=False)
-            if existing_channel.banner != self.banner:
-                existing_channel.banner.delete(save=False)
-        super(Channel, self).save(*args, **kwargs)
-
-    @receiver(models.signals.pre_delete, sender="servers.Channel")
-    def channel_file_pre_delete(sender, instance, **kwargs):
-        for field in instance._meta.fields:
-            if field.name == "icon" or field.name == "banner":
-                file = getattr(instance, field.name)
-                if file:
-                    file.delete(save=False)
 
     class Meta:
         verbose_name = _("Channel")

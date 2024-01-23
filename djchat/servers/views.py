@@ -2,14 +2,25 @@ from django.db.models import Count
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Category, Channel, Server
 from .serializers import CategorySerializer, ChannelSerializer, ServerSerializer
 
 
+class CategoryListViewSet(viewsets.ViewSet):
+    queryset = Category.objects.all()
+    # serializer_class = CategorySerializer
+
+    def list(self, request):
+        serializer = CategorySerializer(self.queryset, many=True)
+        return Response(serializer.data)
+
+
 class ServerListViewSet(viewsets.ViewSet):
     queryset = Server.objects.all()
+    # permission_classes = [IsAuthenticated]
 
     def list(self, request):
         category = request.query_params.get("category")

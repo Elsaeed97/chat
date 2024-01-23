@@ -24,10 +24,12 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 from rest_framework.routers import DefaultRouter
-from servers.views import ServerListViewSet
+from servers.views import CategoryListViewSet, ServerListViewSet
 
 router = DefaultRouter()
 router.register("api/server/select", ServerListViewSet)
+router.register("api/server/category", CategoryListViewSet)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
